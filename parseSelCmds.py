@@ -1,16 +1,5 @@
-import chromedriver_binary #seem to need this to work with anaconda :-/ todo figure out how to remove this dependency
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from pandas import read_excel
-from time import sleep
-from sys import argv, stderr
-import traceback
-#
 import commonObjsAndFuncs as common
-from parsingFuncs import * #mgracz: I know this is frowned upon but in this case it really does make the code cleaner
+import parsingFuncs as pfunc
 
 #todo: design issues to address - not user friendly, global variables dangling everywhere, messy command init structure,
 #                                 debugging is weird, data format validation, implement python package guidelines,
@@ -23,9 +12,9 @@ from parsingFuncs import * #mgracz: I know this is frowned upon but in this case
 ###some sort of customization
 def initComsDriverAndEng(fileName=fname, logFunc=print):
 	try:
-		commands = parseCommandData(fileName)
-		driver = createDriverInstance()
-		engine = createEngine()
+		commands = pfunc.parseCommandData(fileName)
+		driver = pfunc.createDriverInstance()
+		engine = pfunc.createEngine()
 	except:
 		common.templatedExceptionPrint(e, "initComsDriverAndEng")
 
@@ -39,7 +28,7 @@ def execAllComs(commands, driver, engine, debug=False, logFunc=print):
 		for cmd in commands:
 			if(debug):
 				logFunc("Parsing {}".format(str(cmd)))
-			execute(driver, engine, cmd)
+			pfunc.execute(driver, engine, cmd)
 	except Exception as e:
 		common.templatedExceptionPrint(e, "execAllComs")
 

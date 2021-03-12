@@ -44,7 +44,6 @@ import traceback
 
     TODO: Make the second function friendly to outputting to excel for obvious reasons
 
-
 """
 
 
@@ -82,6 +81,7 @@ def parseUserInputData(fileName=fname, numRows=None, formName=""):
     rows = [[parsedData[i][1][j] for i in range(0,numCols)] for j in range(0,numRows)]
     cmds = [[["Type", htmlEls[i], str(row[i])] for i in range(0,numCols)] for row in rows]
     return cmds
+
 
 ##parse pre-configured excel sheet of commands where the columns and rows are like so:
 ##
