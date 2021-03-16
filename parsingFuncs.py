@@ -4,10 +4,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from pandas import read_excel
+import pandas
 from time import sleep
 from sys import argv, stderr
 import traceback
+import constants
 
 ###todo: meta-program this junk away in a dedicated class
 # def getSetWaitInterval(newWI = None):
@@ -42,7 +43,7 @@ import traceback
     this time the data all live in the right-most "Data" column and the preceding two columns
     specify the command and HTML element associated with each datum.
 
-    TODO: Make the second function friendly to outputting to excel for obvious reasons
+    TODO: Make the first function friendly to outputting to excel for obvious reasons
 
 """
 
@@ -66,13 +67,26 @@ import traceback
 
 This function returns cmds that the engine can consume, where a row's format is: 
 
-    [ ("Type", htmlEl_0, 0_val_row), ... ("Type", htmlEl_j, j_val_row) ]
+    [ ["Type", htmlEl_0, 0_val_row], ... ["Type", htmlEl_j, j_val_row] ]
 
     i.e., each element of cmd is the full set of input commands for one data row
     in the excel sheet provided by fileName.
+
+This ends up being a 3D list, characterized by the following order of indeces:
+    cmds[elementIndex] = a single data element in AiM, such as an inventory item or 
+                         an asset
+
+    cmds[elementIndex][commandIndex] = the command information for a piece of the 
+                         data element at elementIndex, where "command" conforms to
+                         the paradigm of commands consumed by the engine, for the
+                         element and command specificed by elementIndex and commandIndex
+
+    cmds[elementIndex][commandIndex][commandPieceindex] = a piece of the
+                        [action,HTML element, data] style command consumed by the engine
+
 """
 def parseUserInputData(fileName=fname, numRows=None, formName=""):
-    dataFile = read_excel(fileName)
+    dataFile = pandas.read_excel(fileName)
     parsedData = [_ for _ in dataFile.items()]
     htmlEls = [formName+parsedData[i][0] for i in range(0,len(parsedData))]
     numCols = len(parsedData)
@@ -95,10 +109,23 @@ def parseCommandData(fileName=fname):
     ###Note: pcd[0]=user actions, pcd[1]=HTML element IDs, pcd[2]=textual data
     return [_ for _ in zip(*[pcd[i][1] for i in range(0,3)])]
 
+#Write the output of parseCommandData to an excel sheet for review, tweaking, and/or
+#buttressing of the commands to be executed.  Returns None.
+def parseCommandDataToExcel(commandFileName=fname, outputFileName=defaultOutputFileName):
+    pcd = parseCommandData(fileName)
+    #from 3D to 2D, necessary for exporting coherently to a single 2D excel spreadsheet
+    pcdFlat = [cmd for element in pcd for cmd in element] 
+    pcdFlatDataFrame = pandas.DataFram.from_records(pcdFlat)
+    #IMPORTANT:
+    #header and index are just the col and row labels, which are just 0-indexed indeces,
+    #and therefore not only are useless but would cause errors when actually trying to
+    #execute commands.  Theerfore header and index are both False, and *NEED* to be
+    pcdFlatDataFrame.to_excel(outputFileName, header=False, index=False)
+
 def createDriverInstance(startUrl = None):
     driver = webdriver.Chrome()
     driver.get(url if startUrl is None else startUrl)
-    ###todo: make this the beginning of the GUI
+    ###todo: make this the beginning of the config GUI?  Seems wrong...
     input("Please log in and then press any key to continue.")
     return driver
 
