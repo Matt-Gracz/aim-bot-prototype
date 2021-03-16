@@ -10,28 +10,32 @@ import parsingFuncs as pfunc
 ###MAIN USER FUNCS
 ###These are the main functions the user should be using, unless they need
 ###some sort of customization
-def initComsDriverAndEng(fileName=fname, logFunc=print):
+def initComsDriverAndEng(fileName=fname, debug=False, logFunc=common.logInfo):
 	try:
+		logFunc("Parsing commands") if debug else None
 		commands = pfunc.parseCommandData(fileName)
+		logFunc("Creating driver") if debug else None
 		driver = pfunc.createDriverInstance()
-		engine = pfunc.createEngine()
+		logFunc("Creating Engine") if debug else None
+		engine = pfunc.createEngine() if debug else None
+		logFunc("Exiting initComsDriverAndEng") if debug else None
 	except:
-		common.templatedExceptionPrint(e, "initComsDriverAndEng")
+		common.logError(message="Something went wrong in initComsDriverAndEng.", exception=e)
 
 	#return a list instead of a tuple, as lists are iterable and mutable
 	#Reason: while this is a helper function, we want to give some degree
 	#of control over the returned data to promote customization where appropriate
 	return [commands, driver, engine]
 
-def execAllComs(commands, driver, engine, debug=False, logFunc=print):
+def execAllCommands(commands, driver, engine, debug=False, logFunc=common.logInfo):
 	try:
 		for cmd in commands:
 			if(debug):
 				logFunc("Parsing {}".format(str(cmd)))
 			pfunc.execute(driver, engine, cmd)
 	except Exception as e:
-		common.templatedExceptionPrint(e, "execAllComs")
+		common.logError(message="Something went wrong in execAllComs.", exception=e)
 
 def executeBasicScript():
-	execAllComs(*initComsDriverAndEng())
+	execAllCommands(*initComsDriverAndEng())
 	

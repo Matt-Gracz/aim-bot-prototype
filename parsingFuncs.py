@@ -9,6 +9,7 @@ from time import sleep
 from sys import argv, stderr
 import traceback
 import constants
+import commonObjsAndFuncs as common
 
 ###todo: meta-program this junk away in a dedicated class
 # def getSetWaitInterval(newWI = None):
@@ -110,17 +111,22 @@ def parseCommandData(fileName=fname):
     return [_ for _ in zip(*[pcd[i][1] for i in range(0,3)])]
 
 #Write the output of parseCommandData to an excel sheet for review, tweaking, and/or
-#buttressing of the commands to be executed.  Returns None.
+#buttressing of the commands to be executed.  Returns True iff successful
 def parseCommandDataToExcel(commandFileName=fname, outputFileName=defaultOutputFileName):
-    pcd = parseCommandData(fileName)
-    #from 3D to 2D, necessary for exporting coherently to a single 2D excel spreadsheet
-    pcdFlat = [cmd for element in pcd for cmd in element] 
-    pcdFlatDataFrame = pandas.DataFram.from_records(pcdFlat)
-    #IMPORTANT:
-    #header and index are just the col and row labels, which are just 0-indexed indeces,
-    #and therefore not only are useless but would cause errors when actually trying to
-    #execute commands.  Theerfore header and index are both False, and *NEED* to be
-    pcdFlatDataFrame.to_excel(outputFileName, header=False, index=False)
+    try:
+        pcd = parseCommandData(fileName)
+        #from 3D to 2D, necessary for exporting coherently to a single 2D excel spreadsheet
+        pcdFlat = [cmd for element in pcd for cmd in element] 
+        pcdFlatDataFrame = pandas.DataFram.from_records(pcdFlat)
+        #IMPORTANT:
+        #header and index are just the col and row labels, which are just 0-indexed indeces,
+        #and therefore not only are useless but would cause errors when actually trying to
+        #execute commands.  Theerfore header and index are both False, and *NEED* to be
+        pcdFlatDataFrame.to_excel(outputFileName, header=False, index=False)
+        return True
+    except Exception as e:
+        common.logError("Something went wrong in parseCommandDataToExcel", e)
+        return False
 
 def createDriverInstance(startUrl = None):
     driver = webdriver.Chrome()
