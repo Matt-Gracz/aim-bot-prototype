@@ -1,0 +1,1 @@
+#Empty for now, just need an __init__.py for aimbot to be able to be imported as a python lib

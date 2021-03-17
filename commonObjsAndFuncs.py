@@ -1,5 +1,9 @@
 import traceback
 import datetime
+import constants
+
+## If this file gets unwieldy, consider breaking logging out into its own lib
+## --mgracz
 
 # ********************** LOGGING ********************** #
 sharedLogFileName = "AiMBotLog.txt"
@@ -35,6 +39,7 @@ def logError(message=None, exception=None):
 def logInfo(message):
     _logGenericMessage(message, levels.INFO)
 def logDebug(message):
-    _logGenericMessage(message, levels.DEBUG)
+    if(common.DEBUG):
+        _logGenericMessage(message, levels.DEBUG)
 def clearLog():
     open(sharedLogFileName,"w").close()

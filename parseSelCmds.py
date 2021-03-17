@@ -1,8 +1,8 @@
 import commonObjsAndFuncs as common
 import parsingFuncs as pfunc
 
-#todo: design issues to address - not user friendly, global variables dangling everywhere, messy command init structure,
-#                                 debugging is weird, data format validation, implement python package guidelines,
+#todo: design issues to address - not user friendly, global variables dangling everywhere, data format validation,
+#                                 implement python package guidelines,
 #                                 and there might be performance scalability issues for lots of data; it takes
 #                                 ~10 minutes to enter in ~100 data points of inventory for example, oh and
 #                                 since the codebase is growing, refactor into sub-libraries, such as common, logging, etc...
@@ -10,15 +10,15 @@ import parsingFuncs as pfunc
 ###MAIN USER FUNCS
 ###These are the main functions the user should be using, unless they need
 ###some sort of customization
-def initComsDriverAndEng(fileName=fname, debug=False, logFunc=common.logInfo):
+def initComsDriverAndEng(fileName=fname, logFunc=common.logDebug):
 	try:
-		logFunc("Parsing commands") if debug else None
+		logFunc(message)("Parsing commands")
 		commands = pfunc.parseCommandData(fileName)
-		logFunc("Creating driver") if debug else None
+		logFunc("Creating driver")
 		driver = pfunc.createDriverInstance()
-		logFunc("Creating Engine") if debug else None
-		engine = pfunc.createEngine() if debug else None
-		logFunc("Exiting initComsDriverAndEng") if debug else None
+		logFunc("Creating Engine")
+		engine = pfunc.createEngine()
+		logFunc("Exiting initComsDriverAndEng")
 	except:
 		common.logError(message="Something went wrong in initComsDriverAndEng.", exception=e)
 
@@ -27,11 +27,10 @@ def initComsDriverAndEng(fileName=fname, debug=False, logFunc=common.logInfo):
 	#of control over the returned data to promote customization where appropriate
 	return [commands, driver, engine]
 
-def execAllCommands(commands, driver, engine, debug=False, logFunc=common.logInfo):
+def execAllCommands(commands, driver, engine, logFunc=common.logDebug):
 	try:
 		for cmd in commands:
-			if(debug):
-				logFunc("Parsing {}".format(str(cmd)))
+			logFunc("Parsing {}".format(str(cmd)))
 			pfunc.execute(driver, engine, cmd)
 	except Exception as e:
 		common.logError(message="Something went wrong in execAllComs.", exception=e)
