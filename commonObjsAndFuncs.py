@@ -32,7 +32,7 @@ def _logGenericMessage(message, level):
 # but if I'm wrong, e.g., if you need a generic logging callback message as
 # responses to UI actions, use this instead of referencing the private
 # function directly
-def getPrivateLogMessageFunction(message, level):
+def getPrivateLogMessageFunction():
     return _logGenericMessage
         
 def createExceptionTracebackMessage(exception):
