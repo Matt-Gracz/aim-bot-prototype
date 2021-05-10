@@ -15,9 +15,12 @@ class loggingLevels():
     DEBUG = "DEBUG"
 levels = loggingLevels()
 
+
+
+
 # Nobody has a reason to invoke this, unless you're using it as callback or
-# in some other weird situation.  If so, create a wrapper/getter function,
-# please.  Something named like call/getPrivateLogGenericFunction.
+# in some other weird situation.  If so use the a wrapper/getter function
+# defined below, please.
 # Thanks,
 # --mgracz
 def _logGenericMessage(message, level):
@@ -25,6 +28,13 @@ def _logGenericMessage(message, level):
         timestamp = datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S")
         logFile.write("{}, {}, {}\n".format(timestamp, level, message))
 
+# Aforementioned getter/wrapper.  This really should never be used, I think,
+# but if I'm wrong, e.g., if you need a generic logging callback message as
+# responses to UI actions, use this instead of referencing the private
+# function directly
+def getPrivateLogMessageFunction(message, level):
+    return _logGenericMessage
+        
 def createExceptionTracebackMessage(exception):
     tb = ''.join(traceback.format_tb(exception.__traceback__))
     tracebackMessage = "Exception: {} occured at:\n{}".format(str(exception), tb)
