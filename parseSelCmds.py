@@ -12,7 +12,7 @@ import parsingFuncs as pfunc
 ###some sort of customization
 def initComsDriverAndEng(fileName=fname, logFunc=common.logDebug):
 	try:
-		logFunc(message)("Parsing commands")
+		logFunc("Parsing commands")
 		commands = pfunc.parseCommandData(fileName)
 		logFunc("Creating driver")
 		driver = pfunc.createDriverInstance()
