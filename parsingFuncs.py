@@ -11,22 +11,6 @@ import traceback
 import constants
 import commonObjsAndFuncs as common
 
-###todo: meta-program this junk away in a dedicated class
-# def getSetWaitInterval(newWI = None):
-#   waitIntervalInSecs = newWI if newWI is not None else waitIntervalInSecs
-#   return waitIntervalInSecs
-# def getSetExplicitWait(newEW = None):
-#   explicitWaitInSecs = newEW if newEW is not None else explicitWaitInSecs
-#   return waitIntervalInSecs
-# def getSetUrl(newURL = None):
-#   url = newURL if newURL is not None else url
-#   return url
-# def getSetFileName(newFN = None):
-#   fname = newFN if newFN is not None else fname
-#   return fname
-# def getSetDebugLevel(newDL = None):
-#   DEBUG = newDL if not newDL is not None else DEBUG
-#   return DEBUG
 
 """
     A bit of additional explanation is warranted for the two different command-parsing funcs.
@@ -38,13 +22,13 @@ import commonObjsAndFuncs as common
     datum in that row would be a value for an HTML element (typically a text box).  The
     output would be a "Type El_i datum" command, where the total number of commands would
     be (#rows * #cols) in the input spreadsheet.  The user then can take this and buttress
-    it with their own commands and run it through the second function
+    it with their own commands and run it through the second function.
 
     The second func is intended to parse a list of commands, again in spreadsheet form, but
     this time the data all live in the right-most "Data" column and the preceding two columns
     specify the command and HTML element associated with each datum.
 
-    TODO: Make the first function friendly to outputting to excel for obvious reasons
+    TODO: Make the first function friendly to outputting to excel for obvious reasons.
 
 """
 
@@ -86,7 +70,7 @@ This ends up being a 3D list, characterized by the following order of indeces:
                         [action,HTML element, data] style command consumed by the engine
 
 """
-def parseUserInputData(fileName=fname, numRows=None, formName=""):
+def parseUserInputData(fileName, numRows=None, formName=""):
     dataFile = pandas.read_excel(fileName)
     parsedData = [_ for _ in dataFile.items()]
     htmlEls = [formName+parsedData[i][0] for i in range(0,len(parsedData))]
@@ -104,20 +88,20 @@ def parseUserInputData(fileName=fname, numRows=None, formName=""):
 ##  type               username            jdoe@university.edu
 ## click               password            
 ##  type               password             itsAsecret123
-def parseCommandData(fileName=fname):
-    parsedCommandData = [_ for _ in read_excel(fileName).items()]
+def parseCommandData(fileName):
+    parsedCommandData = [_ for _ in pandas.read_excel(fileName).items()]
     pcd = parsedCommandData #shorten name for readability in the list comp below
     ###Note: pcd[0]=user actions, pcd[1]=HTML element IDs, pcd[2]=textual data
     return [_ for _ in zip(*[pcd[i][1] for i in range(0,3)])]
 
 #Write the output of parseCommandData to an excel sheet for review, tweaking, and/or
 #buttressing of the commands to be executed.  Returns True iff successful
-def parseCommandDataToExcel(commandFileName=fname, outputFileName=defaultOutputFileName):
+def parseCommandDataToExcel(commandFileName, outputFileName):
     try:
-        pcd = parseCommandData(fileName)
+        pcd = parseCommandData(commandFileName)
         #from 3D to 2D, necessary for exporting coherently to a single 2D excel spreadsheet
         pcdFlat = [cmd for element in pcd for cmd in element] 
-        pcdFlatDataFrame = pandas.DataFram.from_records(pcdFlat)
+        pcdFlatDataFrame = pandas.DataFrame.from_records(pcdFlat)
         #IMPORTANT:
         #header and index are just the col and row labels, which are just 0-indexed indeces,
         #and therefore not only are useless but would cause errors when actually trying to

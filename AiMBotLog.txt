@@ -1,0 +1,15 @@
+11.May 2021 16:54:21, ERROR, Something went wrong in parseCommandDataToExcel
+11.May 2021 16:54:21, ERROR, Exception: name 'fileName' is not defined occured at:
+  File "C:\Users\mattg\Documents\GitHub\aim-bot-prototype\parsingFuncs.py", line 101, in parseCommandDataToExcel
+    pcd = parseCommandData(fileName)
+
+11.May 2021 16:55:01, ERROR, Something went wrong in parseCommandDataToExcel
+11.May 2021 16:55:01, ERROR, Exception: name 'fileName' is not defined occured at:
+  File "C:\Users\mattg\Documents\GitHub\aim-bot-prototype\parsingFuncs.py", line 101, in parseCommandDataToExcel
+    pcd = parseCommandData(fileName)
+
+11.May 2021 16:56:19, ERROR, Something went wrong in parseCommandDataToExcel
+11.May 2021 16:56:19, ERROR, Exception: name 'fileName' is not defined occured at:
+  File "C:\Users\mattg\Documents\GitHub\aim-bot-prototype\parsingFuncs.py", line 101, in parseCommandDataToExcel
+    pcd = parseCommandData(commandFileName)
+
